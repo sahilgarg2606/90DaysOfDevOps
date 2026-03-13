@@ -339,6 +339,6 @@ $? ---> exit status of last executed command if last command succesfuly run then
 
 set -e — exit on error ----> exits the script imediatiely if any commands fails 
 set -u — treat unset variables as error -----> exits the script if is there any unset variables
-set -o pipefail — catch errors in pipes
+set -o pipefail — catch errors in pipes ----> command1| command 2 exit if is there any eroor in first commnad
 set -x — debug mode (trace execution) --->It prints every command before executing it.
 Trap — trap 'cleanup' EXIT
