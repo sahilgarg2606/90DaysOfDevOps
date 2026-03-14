@@ -1,0 +1,182 @@
+# DevOps Quick Interview Notes
+
+## 1. What does `chmod 755 script.sh` do?
+
+`chmod 755` sets permissions for a file.
+
+Permission breakdown:
+
+7 → read + write + execute (owner)
+5 → read + execute (group)
+5 → read + execute (others)
+
+Command:
+
+chmod 755 script.sh
+
+Meaning:
+
+* Owner can read, write, execute
+* Others can read and execute
+* Script becomes executable
+
+---
+
+## 2. Difference Between Process and Service
+
+Process:
+
+* A running instance of a program
+* Can run in foreground or background
+* Example: python script, text editor
+
+Service:
+
+* Background process managed by the system
+* Usually starts automatically at boot
+* Example: nginx, ssh, docker
+
+---
+
+## 3. Find Which Process is Using Port 8080
+
+Command:
+
+lsof -i :8080
+
+or
+
+ss -tulnp | grep 8080
+
+This shows the PID and application using port 8080.
+
+---
+
+## 4. What does `set -euo pipefail` do?
+
+Used in shell scripts for safer execution.
+
+set -e → exit script if any command fails
+set -u → error if undefined variable is used
+set -o pipefail → pipeline fails if any command fails
+
+Example:
+
+set -euo pipefail
+
+---
+
+## 5. Difference Between `git reset --hard` and `git revert`
+
+git reset --hard
+
+* Deletes commits from history
+* Rewrites git history
+* Dangerous for shared repositories
+
+git revert
+
+* Creates a new commit that reverses previous changes
+* History remains intact
+* Safe for shared branches
+
+---
+
+## 6. Best Branching Strategy for 5 Developers Shipping Weekly
+
+Recommended: GitHub Flow
+
+Workflow:
+
+main
+├── feature-login
+├── feature-api
+└── feature-dashboard
+
+Steps:
+
+1. Create feature branch
+2. Make changes
+3. Open pull request
+4. Review and merge into main
+
+---
+
+## 7. What does `git stash` do?
+
+Temporarily saves uncommitted changes.
+
+Example:
+
+git stash
+
+Switch branch:
+
+git checkout main
+
+Restore changes:
+
+git stash pop
+
+Used when you need to switch tasks without committing unfinished work.
+
+---
+
+## 8. Schedule Script to Run Every Day at 3 AM
+
+Use cron.
+
+Edit cron:
+
+crontab -e
+
+Add job:
+
+0 3 * * * /path/to/script.sh
+
+Meaning:
+
+Minute Hour Day Month Weekday
+0      3    *   *     *
+
+Runs daily at 3 AM.
+
+---
+
+## 9. Difference Between `git fetch` and `git pull`
+
+git fetch
+
+* Downloads changes from remote repository
+* Does not change working branch
+
+git pull
+
+* Downloads changes and merges them
+* Updates local branch immediately
+
+---
+
+## 10. What is LVM?
+
+LVM = Logical Volume Manager.
+
+Used for flexible disk management in Linux.
+
+Structure:
+
+Disk → Physical Volume → Volume Group → Logical Volume
+
+Advantages:
+
+* Resize storage easily
+* Combine multiple disks
+* Create snapshots for backups
+
+Example:
+
+lvextend -L +10G /dev/vg/data
+
+LVM allows dynamic storage management compared to fixed partitions.
+
+---
