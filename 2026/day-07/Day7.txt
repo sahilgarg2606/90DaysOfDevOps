@@ -1,0 +1,67 @@
+Part 1 
+
+
+Linux File System Hierarchy
+/ : starting point of everthing
+/home: contain user and user folders like Ubuntu
+/root: root adminstrative files 
+/etc: coonfiguration files 
+/var/log : contains log files system and application logs syslog and auth.log
+/tmp: toring temporary data during scripts
+/bin : system command binaries like cp mv
+/sbin : system related binaries like reboot
+/usr/bin : contains user install binaries and application like docker , nginx
+/opt : used for manually installed apps
+
+
+
+
+Part 2 Scenario based questions 
+systemctl status nginx
+systemctl list-units --type=service   -----> list all the services
+systemctl is-enabled nginx ------> is checks whether the service is enabled at reboot
+
+Service Not Starting
+que 1: A web application service called 'nginx' failed to start after a server reboot.
+What commands would you run to diagnose the issue?
+Write at least 4 commands in order.
+systemctl status nginx
+systemctl is-enabled nginx
+journalctl -u nginx 
+
+
+Scenario 2: High CPU Usage
+
+Your manager reports that the application server is slow.
+You SSH into the server. What commands would you run to identify
+which process is using high CPU?
+top and htop ----> real time process to show the process
+ps aux --sort=%cpu | head -n 10 ----> check the highest cpu consumption is used by which servicwe
+
+
+Scenario 3: Finding Service Logs
+
+A developer asks: "Where are the logs for the 'docker' service?"
+The service is managed by systemd.
+What commands would you use?
+
+# Check service status first
+systemctl status ssh
+
+# View last 50 lines of logs
+journalctl -u ssh -n 50
+
+# Follow logs in real-time
+journalctl -u ssh -f
+
+
+Scenario 4: File Permissions Issue
+
+A script at /home/user/backup.sh is not executing.
+When you run it: ./backup.sh
+You get: "Permission denied"
+
+What commands would you use to fix this?
+firstly check for the permissions of that files we need execute permissions
+ls -l <fileName>
+chmod +x <fileName>

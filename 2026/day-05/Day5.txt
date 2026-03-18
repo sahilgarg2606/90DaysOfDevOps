@@ -1,0 +1,33 @@
+Service Name : ssh
+
+
+Environments Basic
+uname -a ----> prints kernel and system architecture information 
+cat /etc/os-release ----> prints OS name and Version
+
+FileSystem sanity 
+mkdir /tmp/runbook-demo ---> check system disk writable 
+cp /etc/hosts /tmp/runbook-demo/hosts-copy   -----> read and write permissions
+ls -l /tmp/runbook-demo               
+
+
+Cpu and Memory snapshot 
+top ---->which process using CPU and cpu %
+free -h ----> shows RAM usage
+df -h ----> shows root partition
+du -sh /var/log ---> Logs consuming X MB
+ss -tulpn ----> ssh is listening on port 22
+ping -c 4 google.com ---> internet is working fine
+
+journalctl -u ssh -n 50 -----> no recent error in ssh Environments
+tail -n 50 /var/log/syslog ------> Systemlog is generation is normal
+
+
+
+
+if the things get wornse
+
+sudo systemctl restart ssh ----> restarting the ssh service
+journal -u ssh -f  ---> watch live Logs
+ps aux | grep ssh ----> deep analysis
+journalctl -u ssh | grep "error"

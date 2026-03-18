@@ -1,3 +1,7 @@
 ps aux | head
 top
 pgrep ssh
+systemctl status ssh
+systemctl list-units --type=service
+journalctl -u ssh
+tail -n 50 /var/log/syslog

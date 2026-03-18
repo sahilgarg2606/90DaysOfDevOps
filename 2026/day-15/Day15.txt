@@ -1,0 +1,142 @@
+Task 1: DNS – How Names Become IPs
+What happens when you type google.com in a browser?
+
+Browser asks DNS resolver for google.com IP.
+
+Resolver queries root → TLD → authoritative DNS servers.
+
+DNS returns IP address.
+
+Browser connects to that IP using HTTP/HTTPS.
+
+
+Command
+dig google.com
+
+Example observation:
+
+A record → 142.xxx.xxx.xxx
+
+TTL → 300 seconds
+
+Meaning:
+
+DNS cache valid for 5 minutes
+
+Task 2: IP Addressing
+What is an IPv4 address?
+
+An IPv4 address is a 32-bit number written as 4 octets.
+
+Example:
+
+192.168.1.10
+
+Each octet ranges 0–255.
+
+Public vs Private IP
+Type	Example
+Public IP	8.8.8.8
+Private IP	192.168.1.10
+
+Public:
+
+accessible on internet
+
+Private:
+
+internal network only
+
+Private IP Ranges
+10.0.0.0 – 10.255.255.255
+172.16.0.0 – 172.31.255.255
+192.168.0.0 – 192.168.255.255
+Command
+ip addr show
+
+Observation:
+
+192.168.x.x → private IP
+
+used for local network
+
+🔹 Task 3: CIDR & Subnetting
+What does /24 mean?
+192.168.1.0/24
+
+24 bits = network portion
+
+8 bits = host portion
+
+Usable hosts
+
+Formula:
+
+2^(host bits) - 2
+Why subnet?
+
+control network traffic
+
+improve security
+
+better IP management
+
+CIDR Table
+CIDR	Subnet Mask	Total IPs	Usable Hosts
+/24	255.255.255.0	256	254
+/16	255.255.0.0	65,536	65,534
+/28	255.255.255.240	16	14
+🔹 Task 4: Ports – The Doors to Services
+What is a port?
+
+A port is a logical endpoint for network communication.
+
+IP = building
+Port = room number
+
+Common Ports
+Port	Service
+22	SSH
+80	HTTP
+443	HTTPS
+53	DNS
+3306	MySQL
+6379	Redis
+27017	MongoDB
+Command
+ss -tulpn
+
+Example observation:
+
+port 22 → ssh
+
+port 631 → cups
+
+Meaning:
+
+services listening for connections
+
+🔹 Task 5: Putting It Together
+Scenario 1
+curl http://myapp.com:8080
+
+Concepts involved:
+
+DNS resolves myapp.com
+
+TCP connects to port 8080
+
+HTTP request sent
+
+Scenario 2
+app can't reach DB at 10.0.1.50:3306
+
+First checks:
+
+network connectivity
+
+port open
+
+firewall rules
+
+database service running

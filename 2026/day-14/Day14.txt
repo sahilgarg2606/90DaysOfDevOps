@@ -1,0 +1,9 @@
+| Layer           | Meaning                    | Example          |
+| --------------- | -------------------------- | ---------------- |
+| L7 Application  | User-level protocols       | HTTP, HTTPS, DNS |
+| L6 Presentation | Data formatting/encryption | SSL/TLS          |
+| L5 Session      | Session control            | API sessions     |
+| L4 Transport    | Data transport             | TCP, UDP         |
+| L3 Network      | Routing                    | IP               |
+| L2 Data Link    | MAC addressing             | Ethernet         |
+| L1 Physical     | Hardware                   | Cables, NIC      |

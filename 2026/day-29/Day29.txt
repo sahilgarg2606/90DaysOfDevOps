@@ -1,0 +1,75 @@
+
+
+### Task 2: Install Docker
+1. Install Docker on your machine (or use a cloud instance)
+
+i have install the desktop docker from the official site of docker that is https://www.bing.com/ck/a?!&&p=583755b4db4ef5fa26345473b300d52740298b23dd4f1c4afa751d70f3e9004eJmltdHM9MTc3Mzc5MjAwMA&ptn=3&ver=2&hsh=4&fclid=0d3de4aa-a976-6f6f-1410-f3aaa8c86e9d&psq=docker+install+desktop&u=a1aHR0cHM6Ly9kb2NzLmRvY2tlci5jb20vZGVza3RvcC9zZXR1cC9pbnN0YWxsL3dpbmRvd3MtaW5zdGFsbC8 and i have done the setup part 
+for cloud instace ec2 i have make the ec2 instance in aws with the free tier account only and after running the server and connecting it with the ssh 
+and then i have performed this commands 
+sudo apt-get update ----> updating the list of packages
+sudo apt install docker.io -----> downloading the docker on machine and verfying it with systemmd that is service manager
+systemctl is-enabled docker
+
+2. Verify the installation
+docker --version
+output will be looked like this ---Docker version 29.2.1, build a5c7197
+3. Run the `hello-world` container
+hello world is image name that is the most basic container 
+command ---> docker run hello-world
+what will we it do the background it will firstly check for the image locally 
+if it unable to find it will going to fetch it from the docker hub 
+after fetching it will create the container 
+run the container
+it will print the hello world message
+and then container will be exited
+
+4. Read the output carefully — it explains what just happened
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+what will we it do the background it will firstly check for the image locally 
+if it unable to find it will going to fetch it from the docker hub 
+after fetching it will create the container 
+run the container
+it will print the hello world message
+and then container will be exited
+
+
+
+### Task 3: Run Real Containers
+
+1. Run an **Nginx** container and access it in your browser
+docker run -d -p 80:80 nginx
+docker run will be run the container and -d means it will run the container in the detach mode
+-p means exposing port left side number indicates the host port and right side of number represents the container port and then there is name of the image 
+access it from the browser and in the browser just type the localhost:80
+2. Run an **Ubuntu** container in interactive mode — explore it like a mini Linux machine
+docker run -d Ubuntu
+docker exec -it <container_id> bash
+now you will able to run the liunx
+3. List all running containers
+docker ps ---- this command will list all the running containers
+4. List all containers (including stopped ones)
+--->docker ps -a ---> this command will list the container even it was stopped
+5. Stop and remove a container
+docker stop <container_id> ----> stop the container 
+docker rm <container_id> removing the container
+
+
+
+### Task 4: Explore
+1. Run a container in **detached mode** — what's different?
+docker run -d ubuntu
+with d service runs in the background and terminal will be free
+2. Give a container a custom **name**
+--name=<name>
+name tag is used to give the container names 
+docker run --name=sahil hello-world
+3. Map a **port** from the container to your host
+docker run -d -p 80:80 nginx
+left side number indicates the host port and right side of number represents the container port 
+4. Check **logs** of a running container
+docker logs <container_id>
+5. Run a command **inside** a running container
+docker exec -it ubuntu bash
+inside containers ---> ls ,
+pwd
