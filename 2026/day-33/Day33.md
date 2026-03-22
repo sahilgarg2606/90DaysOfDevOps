@@ -76,9 +76,11 @@ networks:
     driver: bridge
    
 Start it, access WordPress in your browser, and set it up.
-
+localhost:8080
 **Verify:** Stop and restart with `docker compose down` and `docker compose up` — is your WordPress data still there?
-
+docker compose down
+docker compose up
+yes my data is still there
 
 ### Task 4: Compose Commands
 Practice and document these:
