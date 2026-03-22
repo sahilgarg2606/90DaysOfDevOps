@@ -34,7 +34,47 @@ They should:
 - Be on the same network (Compose does this automatically)
 - MySQL should have a named volume for data persistence
 - WordPress should connect to MySQL using the service name
+  ---------------docker-compose----------------
+  services:
+  db:
+    image: mysql:8.0
+    container_name: wordpress-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wpuser
+      MYSQL_PASSWORD: wppass
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - wp-net
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress-app
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wpuser
+      WORDPRESS_DB_PASSWORD: wppass
+      WORDPRESS_DB_NAME: wordpress
+    depends_on:
+      - db
+    volumes:
+      - wp_data:/var/www/html
+    networks:
+      - wp-net
+volumes:
+  db_data:
+  wp_data:
 
+networks:
+  wp-net:
+    driver: bridge
+   
 Start it, access WordPress in your browser, and set it up.
 
 **Verify:** Stop and restart with `docker compose down` and `docker compose up` — is your WordPress data still there?
