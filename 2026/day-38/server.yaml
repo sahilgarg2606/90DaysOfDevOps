@@ -1,0 +1,19 @@
+server:
+  name: my-server
+  ip: 192.196.34.5
+  ports: [80, 443, 8080]
+  startup_script_literal: |
+    #!/bin/bash
+    echo "Starting server..."
+    # Additional startup commands can be added here
+  startup_script_folded: >
+    #!/bin/bash
+    echo "Starting server..."
+    # Additional startup commands can be added here
+database:
+  host: localhost
+  name: root
+  credentials:
+      username: admin
+      password: 12345
+
