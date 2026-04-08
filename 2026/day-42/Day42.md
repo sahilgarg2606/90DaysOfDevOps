@@ -130,4 +130,25 @@ yes this file will exists
 3. Trigger it — does it still pick up the job?
 
 Write in your notes: Why are labels useful when you have multiple self-hosted runners?
+job targetting
+multiple runners manage krna
+
+### Task 6: GitHub-Hosted vs Self-Hosted
+Fill this in your notes:
+
+| | GitHub-Hosted | Self-Hosted |
+|---|---|---|
+| Who manages it? | ? | ? |
+| Cost | ? | ? |
+| Pre-installed tools | ? | ? |
+| Good for | ? | ? |
+| Security concern | ? | ? |
+|                         | GitHub-Hosted                                        | Self-Hosted                                           |
+| ----------------------- | ---------------------------------------------------- | ----------------------------------------------------- |
+| **Who manages it?**     | GitHub manage karta hai (VM create, update, cleanup) | Tu khud manage karta hai (server, setup, maintenance) |
+| **Cost**                | Free tier + paid minutes                             | Apni infra cost (server, cloud, electricity)          |
+| **Pre-installed tools** | Already installed (Docker, Node, Python, Git, etc.)  | Tu khud install karega                                |
+| **Good for**            | Beginners, small/medium projects, quick setup        | Production, custom setup, heavy workloads             |
+| **Security concern**    | Safe (isolated, ephemeral machines)                  | Risky agar properly secure na ho (persistent machine) |
+
 

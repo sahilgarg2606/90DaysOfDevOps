@@ -106,3 +106,18 @@ Include at least 3 stages. Hand-drawn and photographed is perfectly fine.
             │
             ▼
      ✅ App Running on Staging
+
+
+
+### Task 5: Explore in the Wild
+1. Open any popular open-source repo on GitHub (Kubernetes, React, FastAPI — pick one you know)
+2. Find their `.github/workflows/` folder
+3. Open one workflow YAML file
+4. Write in your notes:
+   - What triggers it?
+   triggers means that pipeline will work like developer pushes the code and manually click can also help to start the pipeline
+   - How many jobs does it have?
+   typically it has 3-5+
+   - What does it do? (best guess)
+   ensure the quality before merging 
+
