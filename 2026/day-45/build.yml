@@ -1,0 +1,30 @@
+name: build and push
+
+on:
+    push:
+        branches:
+            - master
+jobs:
+    build-push:
+        runs-on: ubuntu-latest
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v4
+
+            - name: login to Docker 
+              uses: docker/login-action@v4
+              with:
+                username: ${{ vars.DOCKERHUB_USER }}
+                password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+            - name: Build and Push
+            #   if: github.ref == 'refs/head/master'
+              uses: docker/build-push-action@v6
+              with:
+                push: true
+                context: .
+                tags: |
+                  ${{vars.DOCKERHUB_USER}}/github-project:${{github.ref_name}}
+                  ${{vars.DOCKERHUB_USER}}/github-project:latest
+                  ${{vars.DOCKERHUB_USER}}/github-project:${{github.sha}}
