@@ -1,0 +1,39 @@
+name: reusabe-build-test
+
+on:
+    workflow_call:
+      inputs:
+        python_version:
+            type: string
+            default: "v.0.1"
+            required: true
+        run_tests: 
+            type: boolean
+            default: true
+      outputs:
+        test_results: 
+            value: ${{ jobs.build-test.outputs.test_result }}
+jobs:
+    build-test:
+        runs-on: ubuntu-latest
+        outputs:
+          test_result: ${{ steps.tested.outputs.test_result }}
+        steps:
+            - name: checkout code
+              uses: actions/checkout@v4
+              
+            - name: setup python
+              uses: actions/setup-python@v6
+              with:
+                  python-version: ${{inputs.python_version}}
+            - name: install dependencies
+              run: pip install -r requirements.txt
+
+            - name: tests
+              id: tested
+              run: |
+                if [ "${{ inputs.run_tests }}" == "true" ]; then
+                   echo "test_result=passed" >> $GITHUB_OUTPUT
+                else
+                   echo "test_result=failed" >> $GITHUB_OUTPUT
+                fi

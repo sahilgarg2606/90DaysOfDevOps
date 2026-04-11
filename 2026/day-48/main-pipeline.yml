@@ -1,0 +1,31 @@
+name: main pipeline
+on:
+    push:
+        branches:
+            - dev
+
+jobs:
+    Job-1:
+        uses: ./.github/workflows/reusable-build-test.yml
+        with: 
+            python_version: "3.13"
+            run_tests: true
+    Job-2:
+        needs: [Job-1]
+        uses: ./.github/workflows/reusable-docker.yml
+        with:
+            tag: "${{vars.DOCKERHUB_USER}}/node"
+            image_name: "flask-app"
+            docker_user: "${{vars.DOCKERHUB_USER}}"
+        secrets:
+            DOCKER_PASS: ${{secrets.DOCKERHUB_TOKEN}}
+    Job-3:
+     needs: [Job-2]
+     runs-on: ubuntu-latest
+     steps:
+        - name: print
+          run: |
+             echo "deploying image: ${{ needs.Job-2.outputs.image_url }}"
+
+
+
