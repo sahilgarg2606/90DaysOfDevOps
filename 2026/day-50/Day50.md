@@ -155,7 +155,7 @@ kind delete cluster --name devops-cluster
 
 kind create cluster --name devops-cluster
 
-kubectl get nodes
+kubectl get node
 Try these useful commands:
 ```bash
 # Check which cluster kubectl is connected to
