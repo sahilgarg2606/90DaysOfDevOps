@@ -34,7 +34,7 @@ Create `.github/workflows/reusable-build-test.yml`:
 2. Inputs: `python_version` (or `node_version`), `run_tests` (boolean, default: true)
 3. Steps:
    - Check out code
-   - Set up the language runtime
+   - Set up the language runtime 
    - Install dependencies
    - Run tests (only if `run_tests` is true)
    - Set output: `test_result` with value `passed` or `failed`
