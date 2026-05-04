@@ -1,38 +1,3 @@
-# Day 53 – Kubernetes Services
-
-## Task
-You have Deployments running multiple Pods, but how do you actually talk to them? Pods get random IP addresses that change every time they restart. Services solve this by giving your Pods a stable network endpoint. Today you will create different types of Services and understand when to use each one.
-
----
-
-## Expected Output
-- A Deployment exposed using ClusterIP, NodePort, and LoadBalancer services
-- Verified Pod-to-Service communication from inside the cluster
-- A markdown file: `day-53-services.md`
-- Screenshot of `kubectl get services` showing your running services
-
----
-
-## Why Services?
-
-Every Pod gets its own IP address. But there are two problems:
-1. Pod IPs are **not stable** — when a Pod restarts or gets replaced, it gets a new IP
-2. A Deployment runs **multiple Pods** — which IP do you connect to?
-
-A Service solves both problems. It provides:
-- A **stable IP and DNS name** that never changes
-- **Load balancing** across all Pods that match its selector
-
-```
-[Client] --> [Service (stable IP)] --> [Pod 1]
-                                   --> [Pod 2]
-                                   --> [Pod 3]
-```
-
----
-
-## Challenge Tasks
-
 ### Task 1: Deploy the Application
 First, create a Deployment that you will expose with Services. Create `app-deployment.yaml`:
 
@@ -66,10 +31,12 @@ kubectl get pods -o wide
 ```
 
 Note the individual Pod IPs. These will change if pods restart — that is the problem Services fix.
-
+yes even'tho we delete the pod then even pod ip's get replaced 
 **Verify:** Are all 3 pods running? Note down their IP addresses.
-
----
+yes all the 3 pods are running. their all are having differnet ip assigned to indiviuals 
+web-app-6cffb4b956-w9jdd   1/1     Running   0          85s   10.244.1.3   tws-cluster-worker2   <none>           <none>
+web-app-6cffb4b956-wtnqb   1/1     Running   0          85s   10.244.2.2   tws-cluster-worker    <none>           <none>
+web-app-6cffb4b956-xhn6s   1/1     Running   0          4s    10.244.2.3   tws-cluster-worker    <none>           <none>
 
 ### Task 2: ClusterIP Service (Internal Access)
 ClusterIP is the default Service type. It gives your Pods a stable internal IP that is only reachable from within the cluster.
@@ -113,10 +80,10 @@ exit
 ```
 
 You should see the Nginx welcome page. The Service load-balanced your request to one of the 3 Pods.
-
+yes i can see the nginx welcome page
 **Verify:** Does the Service respond? Try running the wget command multiple times — the Service distributes traffic across all healthy Pods.
+yes the service is perfectly responding
 
----
 
 ### Task 3: Discover Services with DNS
 Kubernetes has a built-in DNS server. Every Service gets a DNS entry automatically:
@@ -144,8 +111,9 @@ exit
 Both the short name and the full DNS name resolve to the same ClusterIP. In practice, you use the short name when communicating within the same namespace and the full name when reaching across namespaces.
 
 **Verify:** What IP does `nslookup` return? Does it match the CLUSTER-IP from `kubectl get services`?
+yes it is matching the kubectl get services outtputs ip to nslookup service
 
----
+
 
 ### Task 4: NodePort Service (External Access via Node)
 A NodePort Service exposes your application on a port on every node in the cluster. This lets you access the Service from outside the cluster.
@@ -177,8 +145,6 @@ kubectl get services
 
 Access the service:
 ```bash
-# If using Minikube
-minikube service web-app-nodeport --url
 
 # If using Kind, get the node IP first
 kubectl get nodes -o wide
@@ -189,8 +155,7 @@ curl http://localhost:30080
 ```
 
 **Verify:** Can you see the Nginx welcome page from your browser or terminal using the NodePort?
-
----
+yes i can see the NodePort nginx welcome page 
 
 ### Task 5: LoadBalancer Service (Cloud External Access)
 In a cloud environment (AWS, GCP, Azure), a LoadBalancer Service provisions a real external load balancer that routes traffic to your nodes.
@@ -227,10 +192,9 @@ kubectl get services
 ```
 
 In a real cloud cluster, the EXTERNAL-IP would be a public IP address or hostname provisioned by the cloud provider.
-
 **Verify:** What does the EXTERNAL-IP column show? Why is it `<pending>` on a local cluster?
+Local cluster (Kind / Docker Desktop) = koi cloud nahi hai ❌
 
----
 
 ### Task 6: Understand the Service Types Side by Side
 Check all three services:
@@ -246,6 +210,11 @@ Compare them:
 | ClusterIP | Inside the cluster only | Internal communication between services |
 | NodePort | Outside via `<NodeIP>:<NodePort>` | Development, testing, direct node access |
 | LoadBalancer | Outside via cloud load balancer | Production traffic in cloud environments |
+| Type         | Accessible From | Internally Uses      |
+| ------------ | --------------- | -------------------- |
+| ClusterIP    | Inside cluster  | —                    |
+| NodePort     | NodeIP:port     | ClusterIP            |
+| LoadBalancer | Public IP       | NodePort + ClusterIP |
 
 Each type builds on the previous one:
 - LoadBalancer creates a NodePort, which creates a ClusterIP
@@ -254,13 +223,10 @@ Each type builds on the previous one:
 Verify this:
 ```bash
 kubectl describe service web-app-loadbalancer
-```
-
-You should see all three: a ClusterIP, a NodePort, and the LoadBalancer configuration.
-
-**Verify:** Does the LoadBalancer service also have a ClusterIP and NodePort assigned?
-
----
+Type: LoadBalancer
+IP: 10.96.x.x
+Port: 80/TCP
+NodePort: 30071/TCP  👈 IMPORTANT
 
 ### Task 7: Clean Up
 ```bash
@@ -276,41 +242,4 @@ kubectl get services
 Only the built-in `kubernetes` service in the default namespace should remain.
 
 **Verify:** Is everything cleaned up?
-
----
-
-## Hints
-- `selector` in a Service must match `labels` on the Pods — if they do not match, the Service routes traffic to nothing
-- `kubectl get endpoints <service-name>` shows which Pod IPs a Service is currently routing to
-- `port` is what the Service listens on; `targetPort` is what the Pod listens on — they do not have to be the same number
-- NodePort range is 30000-32767; if you do not specify `nodePort`, Kubernetes picks one automatically
-- Use `kubectl describe service <name>` to see the full configuration including Endpoints
-- `kubectl get services -o wide` shows the selector each service uses
-- To test ClusterIP services, you must test from inside the cluster (use a temporary pod)
-
----
-
-## Documentation
-Create `day-53-services.md` with:
-- What problem Services solve and how they relate to Pods and Deployments
-- Your three Service manifests with an explanation of each type
-- The difference between ClusterIP, NodePort, and LoadBalancer
-- How Kubernetes DNS works for service discovery
-- What Endpoints are and how to inspect them
-- Screenshot of your services and the test output
-
----
-
-## Submission
-1. Add `day-53-services.md` and your YAML files to `2026/day-53/`
-2. Commit and push to your fork
-
----
-
-## Learn in Public
-Share on LinkedIn: "Learned Kubernetes Services today — ClusterIP for internal traffic, NodePort for node-level access, and LoadBalancer for production. Services give Pods a stable identity and load balancing."
-
-`#90DaysOfDevOps` `#DevOpsKaJosh` `#TrainWithShubham`
-
-Happy Learning!
-**TrainWithShubham**
+yes
