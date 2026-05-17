@@ -66,9 +66,37 @@ Each StatefulSet pod gets a DNS name: `<pod-name>.<service-name>.<namespace>.svc
 1. Run a temporary busybox pod and use `nslookup` to resolve `web-0.<your-headless-service>.default.svc.cluster.local`
 2. Do the same for `web-1` and `web-2`
 3. Confirm the IPs match `kubectl get pods -o wide`
+# when the pod delete the data inside the pod is also gets delete no volume is there
+kind: Pod
+apiVersion: v1
+metadata:
+    name: data-lost-demo
+    labels:
+        app: data-lost
 
+spec:
+     containers:
+        - name: nginx
+          image: busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              nslookup mysql-stateful-0.mysql-svc.default.svc.cluster.local > /data/message.txt
+               nslookup mysql-stateful-1.mysql-svc.default.svc.cluster.local >> /data/message.txt
+              while true; do
+              sleep 5
+              done
+          volumeMounts:
+            - mountPath: /data
+              name: cache-volume
+     volumes:
+      - name: cache-volume
+        emptyDir: {}
+           
+  
 **Verify:** Does the nslookup IP match the pod IP?
-
+yes nslookup ip and pod ip gets matched
 ---
 
 ### Task 5: Stable Storage — Data Survives Pod Deletion
@@ -79,7 +107,7 @@ Each StatefulSet pod gets a DNS name: `<pod-name>.<service-name>.<namespace>.svc
 The new pod reconnected to the same PVC.
 
 **Verify:** Is the data identical after pod recreation?
-
+yes data is identical after pod recreation
 ---
 
 ### Task 6: Ordered Scaling
@@ -88,6 +116,7 @@ The new pod reconnected to the same PVC.
 3. Check `kubectl get pvc` — all five PVCs still exist. Kubernetes keeps them on scale-down so data is preserved if you scale back up.
 
 **Verify:** After scaling down, how many PVCs exist?
+even after scaling down my still i getting 5 pvcs because kubernetes keeps them on scale-down so data is preserved if you scale backup
 
 ---
 

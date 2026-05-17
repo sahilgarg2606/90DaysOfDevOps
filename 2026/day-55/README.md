@@ -10,16 +10,8 @@ Containers are ephemeral — when a Pod dies, everything inside it disappears. T
 - A PV and PVC created, bound, and data persisting across Pod deletions
 - A markdown file: `day-55-persistent-volumes.md`
 
----
+---   
 
-## Challenge Tasks
-
-### Task 1: See the Problem — Data Lost on Pod Deletion
-1. Write a Pod manifest that uses an `emptyDir` volume and writes a timestamped message to `/data/message.txt`
-2. Apply it, verify the data exists with `kubectl exec`
-3. Delete the Pod, recreate it, check the file again — the old message is gone
-
-**Verify:** Is the timestamp the same or different after recreation?
 
 ---
 
@@ -57,7 +49,7 @@ Access modes to know:
 ---
 
 ### Task 5: StorageClasses and Dynamic Provisioning
-1. Run `kubectl get storageclass` and `kubectl describe storageclass`
+1. Run `kubectl get storageclass` and `kubectl describe storageclass`  
 2. Note the provisioner, reclaim policy, and volume binding mode
 3. With dynamic provisioning, developers only create PVCs — the StorageClass handles PV creation automatically
 
@@ -67,11 +59,23 @@ Access modes to know:
 
 ### Task 6: Dynamic Provisioning
 1. Write a PVC manifest that includes `storageClassName: standard` (or your cluster's default)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+    name: my-pvc
+spec:
+    accessModes:
+       - ReadWriteOnce
+    storageClassName: standard
+    resources:
+       requests:
+          storage: 1Gi
 2. Apply it — a PV should appear automatically in `kubectl get pv`
+when i do kubectl get pv then automatically pv doesnot come because standard class follow the policy of WaitForFirstConsumer that means when pvc is used in some port then only pv will be gets created
 3. Use this PVC in a Pod, write data, verify it works
 
 **Verify:** How many PVs exist now? Which was manual, which was dynamic?
-
+now two pv exist the one is that i have manuallly created and the other one is of that has been created automatically by storageclass: standard
 ---
 
 ### Task 7: Clean Up

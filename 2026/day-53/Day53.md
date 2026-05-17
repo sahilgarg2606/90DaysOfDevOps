@@ -26,8 +26,8 @@ First, create a Deployment that you will expose with Services. Create `app-deplo
 ```
 
 ```bash
-kubectl apply -f app-deployment.yaml
-kubectl get pods -o wide
+  kubectl apply -f app-deployment.yaml
+  kubectl get pods -o wide
 ```
 
 Note the individual Pod IPs. These will change if pods restart — that is the problem Services fix.
