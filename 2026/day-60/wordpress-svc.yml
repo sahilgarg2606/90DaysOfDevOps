@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+
+metadata:
+    name: wordpress-svc
+    namespace: capstone
+
+spec:
+    selector:
+        app: wordpress
+    ports:
+      - port: 80
+        targetPort: 80
+    type: NodePort

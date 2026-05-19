@@ -45,7 +45,7 @@ Three core concepts:
 One command replaced writing a Deployment, Service, and ConfigMap by hand.
 
 **Verify:** How many Pods are running? What Service type was created?
-
+1 pods is running as nginx and service type is of LoadBalancer
 ---
 
 ### Task 4: Customize with Values
