@@ -124,3 +124,27 @@ spec:
 **Verify:** What does the `behavior` section control?
 Behavior section control karta hai:
 HPA kitni fast scale up/down karega
+
+### Task 3: Install Ansible
+Install Ansible on your **control node** (your laptop or one dedicated EC2 instance):
+
+```bash
+# macOS
+brew install ansible
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install ansible -y
+
+# Amazon Linux / RHEL
+sudo yum install ansible -y
+# or
+pip3 install ansible
+
+# Verify
+ansible --version
+```
+
+Confirm the output shows the Ansible version, config file path, and Python version.
+
+**Document:** On which machine did you install Ansible? Why is it only needed on the control node?
