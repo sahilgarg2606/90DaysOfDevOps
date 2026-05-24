@@ -1,35 +1,34 @@
-# Day 62 -- Providers, Resources and Dependencies
-
-## Task
-Yesterday you created standalone resources. But real infrastructure is connected -- a server lives inside a subnet, a subnet lives inside a VPC, a security group controls what traffic gets in. Today you build a complete networking stack on AWS and learn how Terraform figures out what to create first.
-
-Understanding dependencies is what separates a Terraform beginner from someone who can build production infrastructure.
-
----
-
-## Expected Output
-- A VPC with subnet, internet gateway, route table, security group, and an EC2 instance -- all created via Terraform
-- A dependency graph visualized with `terraform graph`
-- A markdown file: `day-62-providers-resources.md`
-
----
-
-## Challenge Tasks
-
 ### Task 1: Explore the AWS Provider
 1. Create a new project directory: `terraform-aws-infra`
 2. Write a `providers.tf` file:
    - Define the `terraform` block with `required_providers` pinning the AWS provider to version `~> 5.0`
    - Define the `provider "aws"` block with your region
+    terraform {
+   required_providers {
+     aws = {
+        source = "hashicorp/aws"
+        version = "~> 5.0"
+     }
+   }
+}
+
+provider "aws" {
+ region = "us-east-1" 
+}
 3. Run `terraform init` and check the output -- what version was installed?
-Finding hashicorp/aws versions matching "~> 5.0"...
-- Installing hashicorp/aws v5.100.0...
-- Installed hashicorp/aws v5.100.0 (signed by HashiCorp)
 4. Read the provider lock file `.terraform.lock.hcl` -- what does it do?
-
+this file will lock the exact  provider  version
+it ensures that in every machine same provider version is there 
+it stores the exact version 
+Lock file = "same version use karo sab log" rule
 **Document:** What does `~> 5.0` mean? How is it different from `>= 5.0` and `= 5.0.0`?
+~5.0 means >= 5.0 and <= 6.0 any latest stable version can be download 
+>= 5.0 any version that is above to 5.0 is alowed
+= 5.0.0 only 5.0.0 version is allorwed
 
----
+
+
+
 
 ### Task 2: Build a VPC from Scratch
 Create a `main.tf` and define these resources one by one:
@@ -41,10 +40,50 @@ Create a `main.tf` and define these resources one by one:
 5. `aws_route_table_association` -- associate the route table with the subnet
 
 Run `terraform plan` -- you should see 5 resources to create.
+resource "aws_vpc" "vpc" {
+  cidr_block       = "10.0.0.0/16"
+  instance_tenancy = "default"
 
+  tags = {
+    Name = "TerraWeek-VPC"
+  }
+}
+
+resource "aws_subnet" "subnet" {
+  vpc_id     = aws_vpc.vpc.id
+  cidr_block = "10.0.1.0/24"
+  map_public_ip_on_launch = true
+  tags = {
+    Name = "TerraWeek-Public-Subnet"
+  }
+}
+
+resource "aws_internet_gateway" "igw" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "internet-gate"
+  }
+}
+
+resource "aws_route_table" "route_table" {
+  vpc_id = aws_vpc.vpc.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  tags = {
+    Name = "route_tablu"
+  }
+}
+
+resource "aws_route_table_association" "route_table_association" {
+  subnet_id      = aws_subnet.subnet.id
+  route_table_id = aws_route_table.route_table.id
+}
 **Verify:** Apply and check the AWS VPC console. Can you see all five resources connected?
-
----
+yes
 
 ### Task 3: Understand Implicit Dependencies
 Look at your `main.tf` carefully:
@@ -55,12 +94,23 @@ Look at your `main.tf` carefully:
 
 Answer these questions:
 - How does Terraform know to create the VPC before the subnet?
+Terraform creates dependency graphes internally 
+and then decides the order automatically
+
 - What would happen if you tried to create the subnet before the VPC existed?
+error will occur they said first create vpc
 - Find all implicit dependencies in your config and list them
+this dependency is used in the subnet vpc_id     = aws_vpc.vpc.id
+this dependency is used in the internet gateway vpc_id = aws_vpc.vpc.id
+this dependency is being used in the route table  vpc_id = aws_vpc.vpc.id
+this dependency is used for attaching the igw with route table gateway_id = aws_internet_gateway.igw.id
+below both are used in the route table association b/w subnet and route table
+  subnet_id      = aws_subnet.subnet.id
+  route_table_id = aws_route_table.route_table.id
 
----
 
-### Task 4: Add a Security Group and EC2 Instance
+
+  ### Task 4: Add a Security Group and EC2 Instance
 Add to your config:
 
 1. `aws_security_group` in the VPC:
@@ -77,8 +127,8 @@ Add to your config:
    - Tag: `"TerraWeek-Server"`
 
 Apply and verify -- your EC2 instance should have a public IP and be reachable.
+yes ec2 has the public ip and it is reachable also
 
----
 
 ### Task 5: Explicit Dependencies with depends_on
 Sometimes Terraform cannot detect a dependency automatically.
@@ -98,6 +148,8 @@ terraform graph
 and paste the output into an online Graphviz viewer.
 
 **Document:** When would you use `depends_on` in real projects? Give two examples.
+ec2 + user data scripts 
+igw + ec2
 
 ---
 
@@ -117,39 +169,8 @@ terraform destroy
 4. Watch the destroy order -- Terraform destroys in reverse dependency order. Verify in the AWS console that everything is cleaned up.
 
 **Document:** What are the three lifecycle arguments (`create_before_destroy`, `prevent_destroy`, `ignore_changes`) and when would you use each?
+create_before_destory - means it will first create the new resource then only adds up the new resource this ensures the zero downtime
+prevent_destory --> this prevents from deletion of resources
+ignore_changes this means terraform will ignore some of the changes
 
 ---
-
-## Hints
-- `aws_vpc.main.id` syntax: `<resource_type>.<resource_name>.<attribute>`
-- Use `terraform fmt` to keep your HCL clean
-- CIDR `10.0.0.0/16` gives you 65,536 IPs, `10.0.1.0/24` gives you 256
-- If you cannot SSH into the instance, check: security group rules, public IP, route table, internet gateway
-- `terraform graph` outputs DOT format -- paste it into webgraphviz.com if you don't have Graphviz
-- Always destroy resources when done to avoid AWS charges
-
----
-
-## Documentation
-Create `day-62-providers-resources.md` with:
-- Your full `main.tf` with comments explaining each resource
-- Screenshot of `terraform apply` output
-- Screenshot of the VPC and its resources in the AWS console
-- The dependency graph (image or text)
-- Explanation of implicit vs explicit dependencies in your own words
-
----
-
-## Submission
-1. Add `day-62-providers-resources.md` to `2026/day-62/`
-2. Commit and push to your fork
-
----
-
-## Learn in Public
-Share on LinkedIn: "Built a complete AWS networking stack with Terraform today -- VPC, subnets, internet gateway, route tables, security groups, and an EC2 instance. All connected through dependency graphs. Terraform decides the order, you define the desired state."
-
-`#90DaysOfDevOps` `#TerraWeek` `#DevOpsKaJosh` `#TrainWithShubham`
-
-Happy Learning!
-**TrainWithShubham**
