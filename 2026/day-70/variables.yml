@@ -1,0 +1,26 @@
+- name: Variable demo
+  hosts: all
+  become: true
+  vars:
+    app_name: terraweek
+    app_port: 8000
+    app_dir: "/opt/{{ app_name }}"
+    packages:
+      - git
+      - curl
+      - wget
+  tasks:
+    - name: Print App
+      debug:
+        msg: "Deploying {{ app_name }} on port {{ app_port }} to {{ app_dir }}"
+
+    - name: create Directory
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: install packages
+      package:
+        name: "{{ packages }}"
+        state: present
