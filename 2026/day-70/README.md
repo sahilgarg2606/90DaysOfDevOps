@@ -301,7 +301,6 @@ Create `loops-demo.yml`:
         - curl
         - unzip
         - jq
-
     - name: Print each user created
       debug:
         msg: "Created user {{ item.name }} in group {{ item.groups }}"
