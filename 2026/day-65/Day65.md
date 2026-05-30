@@ -1,21 +1,3 @@
-# Day 65 -- Terraform Modules: Build Reusable Infrastructure
-
-## Task
-You have been writing everything in one big `main.tf` file. That works for learning, but in real teams you manage dozens of environments with hundreds of resources. Copy-pasting configs across projects is a recipe for disaster.
-
-Today you learn Terraform modules -- the way to package, reuse, and share infrastructure code. Think of modules as functions in programming. Write once, call many times.
-
----
-
-## Expected Output
-- A custom EC2 module you built from scratch
-- A custom security group module wired into the EC2 module
-- A VPC created using the official public registry module
-- A markdown file: `day-65-modules.md`
-
----
-
-## Challenge Tasks
 
 ### Task 1: Understand Module Structure
 A Terraform module is just a directory with `.tf` files. Create this structure:
@@ -40,8 +22,7 @@ terraform-modules/
 Create all the directories and empty files. This is the standard layout every Terraform project follows.
 
 **Document:** What is the difference between a "root module" and a "child module"?
-
----
+root module is a main module from where we can run the terraform apply comand and on the other side child module is a resuable module this child modules will be get called from root modules
 
 ### Task 2: Build a Custom EC2 Module
 Create `modules/ec2-instance/`:
@@ -145,6 +126,8 @@ terraform apply
 ```
 
 **Verify:** Two EC2 instances running, same security group, different names. Check the AWS console.
+![alt text](image.png)
+
 
 ---
 
@@ -181,70 +164,5 @@ terraform apply
 ```
 
 4. Compare: how many resources did the VPC module create vs your hand-written VPC from Day 62?
-
+the above code of vpc module create vpc and private and public subnet route table and its association and igw and its associtituation
 **Document:** Where does Terraform download registry modules to? Check `.terraform/modules/`.
-
----
-
-### Task 6: Module Versioning and Best Practices
-1. Pin your registry module version explicitly:
-   - `version = "5.1.0"` -- exact version
-   - `version = "~> 5.0"` -- any 5.x version
-   - `version = ">= 5.0, < 6.0"` -- range
-
-2. Run `terraform init -upgrade` to check for newer versions
-
-3. Check the state to see how modules appear:
-```bash
-terraform state list
-```
-Notice the `module.vpc.`, `module.web_server.`, `module.web_sg.` prefixes.
-
-4. Destroy everything:
-```bash
-terraform destroy
-```
-
-**Document:** Write down five module best practices:
-- Always pin versions for registry modules
-- Keep modules focused -- one concern per module
-- Use variables for everything, hardcode nothing
-- Always define outputs so callers can reference resources
-- Add a README.md to every custom module
-
----
-
-## Hints
-- `terraform init` must be re-run after adding a new module source
-- Module outputs are accessed as `module.<name>.<output>`
-- `dynamic` blocks use `content {}` inside to define the repeated block
-- Registry modules document all inputs and outputs on registry.terraform.io
-- Local modules use `source = "./modules/<name>"`, registry modules use `source = "<org>/<name>/<provider>"`
-- `terraform get` downloads modules without full init
-
----
-
-## Documentation
-Create `day-65-modules.md` with:
-- Your custom module structure (directory tree)
-- The `variables.tf`, `main.tf`, and `outputs.tf` for your EC2 module
-- Root `main.tf` showing how you call both custom and registry modules
-- Screenshot of both EC2 instances running from the same module
-- Comparison: hand-written VPC vs registry VPC module (resources created)
-- Five module best practices in your own words
-
----
-
-## Submission
-1. Add `day-65-modules.md` to `2026/day-65/`
-2. Commit and push to your fork
-
----
-
-## Learn in Public
-Share on LinkedIn: "Built my first custom Terraform modules today -- EC2 and security group modules called multiple times with different configs. Then replaced 50 lines of VPC code with one registry module. Modules are the key to scalable infrastructure as code."
-
-`#90DaysOfDevOps` `#TerraWeek` `#DevOpsKaJosh` `#TrainWithShubham`
-
-Happy Learning!
-**TrainWithShubham**

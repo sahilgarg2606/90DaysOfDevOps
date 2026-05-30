@@ -316,7 +316,7 @@ ansible-vault encrypt group_vars/db/secrets.yml
 
 Run with the vault password:
 ```bash
-ansible-playbook db-setup.yml --ask-vault-pass
+  
 ```
 
 6. **Use a password file** (better for CI/CD):
