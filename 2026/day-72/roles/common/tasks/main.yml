@@ -1,0 +1,30 @@
+# tasks file for roles/common
+
+   - name: update the list of packages
+     package:
+       update_cache: true
+     tags: common
+
+   - name: Install common Packages
+     package:
+       name: "{{ common_packages }}"
+       state: present
+     tags: common
+
+   - name: Set hostname
+     hostname:
+       name: "{{ inventory_hostname }}"
+     tags: common
+
+   - name:  Set Timezone
+     timezone:
+       name: "{{ timezone }}"
+     tags: common
+
+   - name: Create deploy User
+     user:
+       name: deploy
+       groups: ubuntu
+       shell: /bin/bash
+       state: present
+     tags: common

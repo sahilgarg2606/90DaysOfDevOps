@@ -214,8 +214,7 @@ nginx_server_name: "_"
 Write tasks that:
 1. Install Nginx
 2. Remove the default Nginx site config
-3. Deploy the main Nginx config from a template
-4. Deploy the reverse proxy config from a template
+
 5. Test Nginx config before reloading:
 ```yaml
 - name: Test Nginx configuration
@@ -265,15 +264,7 @@ server {
 **`roles/nginx/handlers/main.yml`:**
 ```yaml
 ---
-- name: Reload Nginx
-  service:
-    name: nginx
-    state: reloaded
-
-- name: Restart Nginx
-  service:
-    name: nginx
-    state: restarted
+   
 ```
 
 ---
@@ -328,30 +319,7 @@ vault_password_file = .vault_pass
   hosts: web
   become: true
   roles:
-    - nginx
-  tags: nginx
-```
-
-Deploy the full stack:
-```bash
-# Dry run first -- always
-ansible-playbook site.yml --check --diff
-
-# Full deploy
-ansible-playbook site.yml
-```
-
-Use tags for selective execution:
-```bash
-# Only set up Docker and containers
-ansible-playbook site.yml --tags docker
-
-# Only update Nginx config
-ansible-playbook site.yml --tags nginx
-
-# Skip common setup
-ansible-playbook site.yml --skip-tags common
-```
+  
 
 **Verify:**
 1. Curl the server on port 8080 -- does the Docker container respond directly?
